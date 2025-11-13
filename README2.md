@@ -122,16 +122,14 @@ EOF
 echo "✔ 替换完成：$FILE"
 ```
 
-训练
+训练与
+   cd /workspace/mmdetection;
+   python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > /workspace/train.log 2>&1 && \
 
-    python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > train.log 2>&1
+验证（自己替换权重名字）
+   cd /workspace/mmdetection;
+   python tools/test.py configs/crop_pest/faster_rcnn_crop_pest.py /workspace/output/epoch_46.pth --show-dir /workspace/output2_show/ > /workspace/eval_50.log 2>&1
 
-验证与测试，会在`/workspace/output1_show/`生成比对的图像打标
-
-    python tools/test.py \
-    configs/crop_pest/faster_rcnn_crop_pest.py \
-    /workspace/output/epoch_46.pth \
-    --show-dir /workspace/output2_show/ > eval_50.log 2>&1
 
 
 

@@ -34,7 +34,7 @@ classes = (
 
 # 数据加载
 train_dataloader = dict(
-    batch_size=24,                # 可根据显存调整
+    batch_size=18,                # 可根据显存调整
     num_workers=8,
     dataset=dict(
         type=dataset_type,
@@ -47,7 +47,7 @@ train_dataloader = dict(
 )
 
 val_dataloader = dict(
-    batch_size=24,
+    batch_size=18,
     num_workers=8,
     dataset=dict(
         type=dataset_type,
@@ -60,7 +60,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=24,
+    batch_size=18,
     num_workers=8,
     dataset=dict(
         type=dataset_type,
