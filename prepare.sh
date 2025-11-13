@@ -1,24 +1,3 @@
-
-
-Doc文档：`https://docs.google.com/document/d/1H8y2cItitBfidH8BwDBNAL4e1RJpIFDKc4HgqvQaMic/edit?tab=t.9ud2au53lm5g`
-
-Git repo: `https://github.com/open-mmlab/mmdetection`
-
-# 文件结构说明
-
-kagglehub下载的数据是直接的yolov5 v8的数据格式，但是 MMD(即MMDetection) 不直接支持此格式。
-
-故而有写`yolo2coco.py`脚本，进行格式转换，从yolo的`data.yaml`变为coco的三个json。Coco格式的json包含文件路径，但是yolo的label坐标数据会被coco写到json中，这是yolo格式和coco格式差别。
-
-我的脚本直接讲coco的三个json文件写到目录`/root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/`之下，舍弃了`annotations`之类的目录名包装。
-
-# 环境准备
-
-   git clone https://github.com/SenRanja/mmdetection.git
-
-Python should be **3.10.x**, there is something wrong if **3.11.x** or **3.12.x**.
-
-```bash
 # 安装daemon进程
 apt install screen
 
@@ -44,26 +23,6 @@ MMCV_WITH_OPS=1 FORCE_CUDA=1 python setup.py build_ext --inplace
 pip install -e .
 python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmcv._ext loaded successfully')"
 
-```
-
-然后手动部分：
-
-```bash
-cd /workspace/
-# 【到此不要复制！需要手动操作】
-# 手动复制文件进去
-# download.py 和 yolo2coco.py 复制到 /workspace/
-# faster_rcnn_crop_pest.py 复制到 /workspace/mmdetection/configs/crop_pest/
-
-# 下载 kagglehub 数据集
-# 数据集默认路径：
-# /root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/
-python /workspace/mmdetection/download.py
-```
-
-TODO: 进行数据清洗
-
-```bash
 cd /workspace/
 git clone https://github.com/SenRanja/Aug.git
 pip install -U pip setuptools wheel
@@ -78,17 +37,11 @@ cd /workspace/Aug/
 python /workspace/Aug/main.py
 cd /workspace/
 
-```
 
-
-```bash
 # 进行yolo2coco转换
 python /workspace/mmdetection/yolo2coco.py
-```
 
-因为python新版本针对反序列化的安全机制，和这个库本身使用的这种办法，导致生成图片预测打标比对的功能无法实现，此处使用我的办法可以运行这个模型。
 
-```bash
 #!/bin/bash
 
 FILE="/venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py"
@@ -122,16 +75,5 @@ def load_from_local(filename: str, map_location: str = 'cpu') -> dict:
 EOF
 
 echo "✔ 替换完成：$FILE"
-```
-
-训练与
-   cd /workspace/mmdetection;
-   python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > /workspace/train.log 2>&1 && \
-
-验证（自己替换权重名字）
-   cd /workspace/mmdetection;
-   python tools/test.py configs/crop_pest/faster_rcnn_crop_pest.py /workspace/output/epoch_46.pth --show-dir /workspace/output2_show/ > /workspace/eval_50.log 2>&1
-
-
 
 
