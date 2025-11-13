@@ -842,6 +842,36 @@ class RepPointsHead(AnchorFreeHead):
             bbox_pred = filtered_results['bbox_pred']
             priors = filtered_results['priors']
 
+            # -------------------------
+            # 🌟 强制每个 prior 只保留最高得分的类别
+            # -------------------------
+            if scores.numel() > 0:
+                # 组合成一个表，便于合并
+                temp = torch.stack(
+                    [scores, labels.float(), bbox_pred[:, 0], bbox_pred[:, 1], bbox_pred[:, 2], bbox_pred[:, 3]],
+                    dim=-1)
+
+                # 按 prior grouping: priors.shape=(N,2) → unique indices
+                # 找出同一个prior的多类预测（因为 prior 是 anchor-free 特征位置）
+                _, inverse_indices = torch.unique(priors, return_inverse=True, dim=0)
+
+                # 找每个 prior 最高得分类别
+                max_indices = []
+                for i in range(inverse_indices.max().item() + 1):
+                    idx = torch.where(inverse_indices == i)[0]
+                    if len(idx) > 0:
+                        # 选得分最高的
+                        best = idx[scores[idx].argmax()]
+                        max_indices.append(best)
+
+                # 过滤
+                max_indices = torch.tensor(max_indices, device=scores.device)
+                scores = scores[max_indices]
+                labels = labels[max_indices]
+                bbox_pred = bbox_pred[max_indices]
+                priors = priors[max_indices]
+            # -------------------------
+
             bboxes = self._bbox_decode(priors, bbox_pred,
                                        self.point_strides[level_idx],
                                        img_shape)

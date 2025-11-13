@@ -66,42 +66,67 @@ cd /workspace/
 git clone https://github.com/SenRanja/Aug.git
 pip install -U pip setuptools wheel
 pip install albumentations kagglehub
-...
+
+# 替换
+NEW_PATH=$(python /workspace/Aug/download.py)
+sed -i "s|kagglehub_crop_pests_dataset_path = r'.*'|kagglehub_crop_pests_dataset_path = r'$NEW_PATH'|" /workspace/Aug/main.py
+
+# 数据清洗
+cd /workspace/Aug/
+python /workspace/Aug/main.py
+cd /workspace/
+
 ```
 
 
-```
+```bash
 # 进行yolo2coco转换
 python /workspace/mmdetection/yolo2coco.py
+```
+
+因为python新版本针对反序列化的安全机制，和这个库本身使用的这种办法，导致生成图片预测打标比对的功能无法实现，此处使用我的办法可以运行这个模型。
+
+```bash
+#!/bin/bash
+
+FILE="/venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py"
+
+# 备份
+cp "$FILE" "$FILE.bak"
+
+# 删除旧的函数内容（包含装饰器）
+sed -i "/@CheckpointLoader.register_scheme(prefixes='')/,/return checkpoint/d" "$FILE"
+
+# 追加新的函数（包含装饰器）
+cat << 'EOF' >> "$FILE"
+
+@CheckpointLoader.register_scheme(prefixes='')
+def load_from_local(filename: str, map_location: str = 'cpu') -> dict:
+    import torch
+    import mmengine.logging
+
+    filename = osp.expanduser(filename)
+    if not osp.isfile(filename):
+        raise FileNotFoundError(f"{filename} can not be found.")
+
+    # 信任 mmengine 的日志对象，避免 UnpicklingError
+    torch.serialization.add_safe_globals([mmengine.logging.history_buffer.HistoryBuffer])
+
+    # 允许完整反序列化
+    checkpoint = torch.load(filename, map_location=map_location, weights_only=False)
+
+    return checkpoint
+
+EOF
+
+echo "✔ 替换完成：$FILE"
 ```
 
 训练
 
     python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > train.log 2>&1
 
-验证与测试
-
-因为python新版本针对反序列化的安全机制，和这个库本身使用的这种办法，导致生成图片预测打标比对的功能无法实现，此处使用我的办法可以运行这个模型。
-
-1. 先修改如下的py代码，替换这个`load_from_local`函数
-
-    vi /venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py
-
-```python
-def load_from_local(filename: str, map_location: str = 'cpu') -> dict:
-    import torch
-    import mmengine.logging
-
-    # ✅ 信任 mmengine 的日志对象，避免 UnpicklingError
-    torch.serialization.add_safe_globals([mmengine.logging.history_buffer.HistoryBuffer])
-
-    # ✅ 关键：允许完整反序列化（PyTorch 2.6+ 默认是 True）
-    checkpoint = torch.load(filename, map_location=map_location, weights_only=False)
-
-    return checkpoint
-```
-
-然后自己运行这个命令就成功了，会在`/workspace/output1_show/`生成比对的图像打标
+验证与测试，会在`/workspace/output1_show/`生成比对的图像打标
 
     python tools/test.py \
     configs/crop_pest/faster_rcnn_crop_pest.py \

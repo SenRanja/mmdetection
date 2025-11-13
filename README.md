@@ -47,7 +47,6 @@ python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmc
 然后手动部分：
 
 ```bash
-
 # 【到此不要复制！需要手动操作】
 # 手动复制文件进去
 # download.py 和 yolo2coco.py 复制到 /workspace/
