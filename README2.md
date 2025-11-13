@@ -61,7 +61,7 @@ cd /workspace/
 python /workspace/mmdetection/download.py
 ```
 
-TODO: 进行数据清洗
+进行数据清洗
 
 ```bash
 cd /workspace/
