@@ -59,41 +59,21 @@ cd /workspace/
 python /workspace/mmdetection/download.py
 ```
 
-进行数据清洗
+TODO: 进行数据清洗
 
 ```bash
 cd /workspace/
 git clone https://github.com/SenRanja/Aug.git
 pip install -U pip setuptools wheel
 pip install albumentations kagglehub
-
+...
 ```
 
 
 ```
 # 进行yolo2coco转换
-python yolo2coco.py
+python /workspace/mmdetection/yolo2coco.py
 ```
-
-以上参数解释：
-
-1. openmim 是一个 命令行包管理工具，名字全称是 OpenMMLab Installer Manager (MIM)。
-它类似于 pip 或 conda，但专门为 OpenMMLab 系列项目 提供更方便的安装、依赖解析和版本管理。
-安装后，就会获得一个命令行工具叫 **mim**。
-
-你可以在终端里运行：
-
-    mim --help
-
-安装好 openmim 后，你就能使用：
-
-    mim install <package>
-
-# commands
-
-监控显卡干活儿
-
-    watch -n 1 nvidia-smi
 
 训练
 
