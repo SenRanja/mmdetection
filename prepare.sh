@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # 安装daemon进程
 apt install screen
 
@@ -42,7 +44,6 @@ cd /workspace/
 python /workspace/mmdetection/yolo2coco.py
 
 
-#!/bin/bash
 
 FILE="/venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py"
 
