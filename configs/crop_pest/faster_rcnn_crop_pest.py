@@ -34,7 +34,7 @@ classes = (
 
 # 数据加载
 train_dataloader = dict(
-    batch_size=18,                # 可根据显存调整
+    batch_size=24,                # 可根据显存调整
     num_workers=8,
     dataset=dict(
         type=dataset_type,
@@ -47,7 +47,7 @@ train_dataloader = dict(
 )
 
 val_dataloader = dict(
-    batch_size=18,
+    batch_size=24,
     num_workers=8,
     dataset=dict(
         type=dataset_type,
@@ -60,7 +60,7 @@ val_dataloader = dict(
 )
 
 test_dataloader = dict(
-    batch_size=18,
+    batch_size=24,
     num_workers=8,
     dataset=dict(
         type=dataset_type,
@@ -88,8 +88,18 @@ model = dict(
     )
 )
 
+default_hooks = dict(
+    checkpoint=dict(
+        type='CheckpointHook',
+        interval=20,         # ⭐ 每 20 epoch 保存一次
+        max_keep_ckpts=5,    # ⭐ 最多保留 5 个，可按需调整
+        save_best='auto'     # （可选）自动保存最佳模型
+    )
+)
+
+
 # 训练设置
-train_cfg = dict(max_epochs=150, val_interval=1)
+train_cfg = dict(max_epochs=150, val_interval=4)
 
 # 输出目录
 work_dir = '/workspace/output/'
