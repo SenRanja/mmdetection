@@ -20,6 +20,8 @@ Python should be **3.10.x**, there is something wrong if **3.11.x** or **3.12.x*
 # 安装daemon进程
 apt install screen
 
+cd /workspace/
+
 # 安装依赖
 pip install -U pip setuptools wheel
 pip install kagglehub
@@ -27,9 +29,7 @@ pip install torch torchvision torchaudio
 pip install -U openmim
 mim install mmengine
 mim install mmdet
-git clone https://github.com/open-mmlab/mmdetection.git
-cd /workspace/mmdetection
-mkdir /workspace/mmdetection/configs/crop_pest/
+git clone https://github.com/SenRanja/mmdetection.git
 
 # 安装mmcv
 # 此过程有点费时间，因为我调研过程中此步骤一直出错，严格按照此处bash执行
@@ -47,7 +47,7 @@ python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmc
 然后手动部分：
 
 ```bash
-
+cd /workspace/
 # 【到此不要复制！需要手动操作】
 # 手动复制文件进去
 # download.py 和 yolo2coco.py 复制到 /workspace/
@@ -56,8 +56,21 @@ python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmc
 # 下载 kagglehub 数据集
 # 数据集默认路径：
 # /root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/
-python download.py
+python /workspace/mmdetection/download.py
+```
 
+进行数据清洗
+
+```bash
+cd /workspace/
+git clone https://github.com/SenRanja/Aug.git
+pip install -U pip setuptools wheel
+pip install albumentations kagglehub
+
+```
+
+
+```
 # 进行yolo2coco转换
 python yolo2coco.py
 ```
