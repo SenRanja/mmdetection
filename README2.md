@@ -13,8 +13,12 @@ kagglehub下载的数据是直接的yolov5 v8的数据格式，但是 MMD(即MMD
 我的脚本直接讲coco的三个json文件写到目录`/root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/`之下，舍弃了`annotations`之类的目录名包装。
 
 # 环境准备
-
+   
+   cd /workspace/
    git clone https://github.com/SenRanja/mmdetection.git
+   chmod +x ./mmdetection/prepare.sh
+   ./mmdetection/prepare.sh
+   
 
 Python should be **3.10.x**, there is something wrong if **3.11.x** or **3.12.x**.
 
