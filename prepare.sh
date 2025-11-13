@@ -32,11 +32,10 @@ pip install albumentations kagglehub
 
 # 替换
 NEW_PATH=$(python /workspace/Aug/download.py)
-sed -i "s@kagglehub_crop_pests_dataset_path = r'.*'@kagglehub_crop_pests_dataset_path = r'$NEW_PATH'@" /workspace/Aug/main.py
 
 # 数据清洗
 cd /workspace/Aug/
-python /workspace/Aug/main.py
+python /workspace/Aug/main.py "$NEW_PATH"
 cd /workspace/
 
 
