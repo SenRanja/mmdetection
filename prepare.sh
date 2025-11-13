@@ -31,7 +31,7 @@ pip install -U pip setuptools wheel
 pip install albumentations kagglehub
 
 # 替换
-NEW_PATH=$(python /workspace/Aug/download.py)
+NEW_PATH=$(python /workspace/Aug/download.py | tail -n 1)
 
 # 数据清洗
 cd /workspace/Aug/
