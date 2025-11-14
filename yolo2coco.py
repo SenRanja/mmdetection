@@ -75,7 +75,7 @@ def yolo_to_coco(data_yaml_path, save_dir):
                     annotations.append({
                         'id': ann_id,
                         'image_id': img_id + 1,
-                        'category_id': cls + 1,
+                        'category_id': cls,
                         'bbox': [x_min, y_min, w_box, h_box],
                         'area': w_box * h_box,
                         'iscrowd': 0
@@ -92,7 +92,7 @@ def yolo_to_coco(data_yaml_path, save_dir):
             "licenses": [],
             'images': images,
             'annotations': annotations,
-            'categories': [{'id': i + 1, 'name': name} for i, name in enumerate(names)]
+            'categories': [{'id': i, 'name': name} for i, name in enumerate(names)]
         }
 
         ann_path = os.path.join(save_dir, f"instances_{split}.json")

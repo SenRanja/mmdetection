@@ -13,12 +13,20 @@ kagglehub下载的数据是直接的yolov5 v8的数据格式，但是 MMD(即MMD
 我的脚本直接讲coco的三个json文件写到目录`/root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/`之下，舍弃了`annotations`之类的目录名包装。
 
 # 环境准备
+   
+   cd /workspace/
+   git clone https://github.com/SenRanja/mmdetection.git
+   chmod +x ./mmdetection/prepare.sh
+   ./mmdetection/prepare.sh
+   
 
 Python should be **3.10.x**, there is something wrong if **3.11.x** or **3.12.x**.
 
 ```bash
 # 安装daemon进程
 apt install screen
+
+cd /workspace/
 
 # 安装依赖
 pip install -U pip setuptools wheel
@@ -27,9 +35,7 @@ pip install torch torchvision torchaudio
 pip install -U openmim
 mim install mmengine
 mim install mmdet
-git clone https://github.com/open-mmlab/mmdetection.git
-cd /workspace/mmdetection
-mkdir /workspace/mmdetection/configs/crop_pest/
+git clone https://github.com/SenRanja/mmdetection.git
 
 # 安装mmcv
 # 此过程有点费时间，因为我调研过程中此步骤一直出错，严格按照此处bash执行
@@ -47,6 +53,7 @@ python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmc
 然后手动部分：
 
 ```bash
+cd /workspace/
 # 【到此不要复制！需要手动操作】
 # 手动复制文件进去
 # download.py 和 yolo2coco.py 复制到 /workspace/
@@ -55,64 +62,82 @@ python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmc
 # 下载 kagglehub 数据集
 # 数据集默认路径：
 # /root/.cache/kagglehub/datasets/rupankarmajumdar/crop-pests-dataset/versions/2/
-python download.py
-
-# 进行yolo2coco转换
-python yolo2coco.py
+python /workspace/mmdetection/download.py
 ```
 
-以上参数解释：
+进行数据清洗
 
-1. openmim 是一个 命令行包管理工具，名字全称是 OpenMMLab Installer Manager (MIM)。
-它类似于 pip 或 conda，但专门为 OpenMMLab 系列项目 提供更方便的安装、依赖解析和版本管理。
-安装后，就会获得一个命令行工具叫 **mim**。
+```bash
+cd /workspace/
+git clone https://github.com/SenRanja/Aug.git
+pip install -U pip setuptools wheel
+pip install albumentations kagglehub
 
-你可以在终端里运行：
+# 替换
+NEW_PATH=$(python /workspace/Aug/download.py)
+sed -i "s|kagglehub_crop_pests_dataset_path = r'.*'|kagglehub_crop_pests_dataset_path = r'$NEW_PATH'|" /workspace/Aug/main.py
 
-    mim --help
+# 数据清洗
+cd /workspace/Aug/
+python /workspace/Aug/main.py
+cd /workspace/
 
-安装好 openmim 后，你就能使用：
+```
 
-    mim install <package>
 
-# commands
-
-监控显卡干活儿
-
-    watch -n 1 nvidia-smi
-
-训练
-
-    python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > train.log 2>&1
-
-验证与测试
+```bash
+# 进行yolo2coco转换
+python /workspace/mmdetection/yolo2coco.py
+```
 
 因为python新版本针对反序列化的安全机制，和这个库本身使用的这种办法，导致生成图片预测打标比对的功能无法实现，此处使用我的办法可以运行这个模型。
 
-1. 先修改如下的py代码，替换这个`load_from_local`函数
+```bash
+#!/bin/bash
 
-    vi /venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py
+FILE="/venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py"
 
-```python
+# 备份
+cp "$FILE" "$FILE.bak"
+
+# 删除旧的函数内容（包含装饰器）
+sed -i "/@CheckpointLoader.register_scheme(prefixes='')/,/return checkpoint/d" "$FILE"
+
+# 追加新的函数（包含装饰器）
+cat << 'EOF' >> "$FILE"
+
+@CheckpointLoader.register_scheme(prefixes='')
 def load_from_local(filename: str, map_location: str = 'cpu') -> dict:
     import torch
     import mmengine.logging
 
-    # ✅ 信任 mmengine 的日志对象，避免 UnpicklingError
+    filename = osp.expanduser(filename)
+    if not osp.isfile(filename):
+        raise FileNotFoundError(f"{filename} can not be found.")
+
+    # 信任 mmengine 的日志对象，避免 UnpicklingError
     torch.serialization.add_safe_globals([mmengine.logging.history_buffer.HistoryBuffer])
 
-    # ✅ 关键：允许完整反序列化（PyTorch 2.6+ 默认是 True）
+    # 允许完整反序列化
     checkpoint = torch.load(filename, map_location=map_location, weights_only=False)
 
     return checkpoint
+
+EOF
+
+echo "✔ 替换完成：$FILE"
 ```
 
-然后自己运行这个命令就成功了，会在`/workspace/output1_show/`生成比对的图像打标
+训练与
+   cd /workspace/mmdetection;
+   python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > /workspace/train.log 2>&1
 
-    python tools/test.py \
-    configs/crop_pest/faster_rcnn_crop_pest.py \
-    /workspace/output/epoch_46.pth \
-    --show-dir /workspace/output2_show/ > eval_50.log 2>&1
+验证（自己替换权重名字）
+   cd /workspace/mmdetection;
+   python tools/test.py configs/crop_pest/faster_rcnn_crop_pest.py /workspace/output/epoch_46.pth --show-dir /workspace/output2_show/ > /workspace/eval_50.log 2>&1
 
 
 
+正确率：
+数据清洗的：True 347 False 199 正确率：0.6355311355311355
+没数据清洗的：True 347 False 199 正确率：0.6355311355311355
