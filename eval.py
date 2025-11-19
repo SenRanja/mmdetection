@@ -6,26 +6,26 @@ import os
 
 def judge(result):
 
-    # 取识别到的 text
+    # Retrieve the recognized text
     texts = [text for (_, text, _) in result]
     new_test_list = []
     for t in texts:
-        # re.findall 将  ['Grasshoppers']
+        # re.findall  ['Grasshoppers']
         letters = re.findall(r'[A-Za-z]+', t)
         print(letters)
         new_test_list.extend(letters)
 
     # print("Recognized texts:", texts)
 
-    # 如果没有文字或只有一个文字，没法比
+    # If there are no words or only one word, it's incomparable.
     if len(new_test_list) <= 1:
         print("Not enough text to compare.")
         return False
     else:
-        # 全部统一小写 + 去掉空格，避免大小写导致误判
+        # Use all lowercase letters and remove spaces to avoid misjudgments caused by case sensitivity.
         normalized = [t.lower().strip() for t in new_test_list]
 
-        # 判断是否全部一样
+        # Check if all are the same
         all_same = all(t == normalized[0] for t in normalized)
 
         print("\n=== Comparison Result ===")
@@ -40,7 +40,7 @@ def judge(result):
             return False
 
 if __name__ == '__main__':
-    reader = easyocr.Reader(['en'])  # 因为你是英文
+    reader = easyocr.Reader(['en'])
     # root = r'C:\Users\shenyanjian\Downloads\mmdetection-dataclened\eval\output2_show (1)\output2_show'
     root = r'C:\Users\shenyanjian\Downloads\mmdetection-non-dataclened\eval\output2_show (1)\output2_show'
     files = os.listdir(root)

@@ -1,26 +1,26 @@
 #!/bin/bash
 
-# 安装daemon进程
+# Install daemon process
 apt install screen
 
 cd /workspace/
 
-# 安装依赖
+# Install dependencies
 pip install -U pip setuptools wheel
-pip install kagglehub
+pip install kagglehub seaborn
 pip install torch torchvision torchaudio
 pip install -U openmim
 mim install mmengine
 mim install mmdet
 git clone https://github.com/SenRanja/mmdetection.git
 
-# 安装mmcv
-# 此过程有点费时间，因为我调研过程中此步骤一直出错，严格按照此处bash执行
+# Install mmcv
+# This process is a bit time-consuming because I kept encountering errors during my research. Please strictly follow the bash instructions here.
 cd /workspace/
 pip uninstall -y mmcv mmcv-full
 git clone https://github.com/open-mmlab/mmcv.git
 cd mmcv
-git checkout v2.1.0   # 这个版本与 mmdetection 最新版最兼容
+git checkout v2.1.0   # This version is most compatible with the latest version of mmdetection
 MMCV_WITH_OPS=1 FORCE_CUDA=1 python setup.py build_ext --inplace
 pip install -e .
 python -c "import mmcv; print(mmcv.__version__); import mmcv.ops; print('✅ mmcv._ext loaded successfully')"
@@ -30,29 +30,29 @@ git clone https://github.com/SenRanja/Aug.git
 pip install -U pip setuptools wheel
 pip install albumentations kagglehub
 
-# 替换
+# Replace
 NEW_PATH=$(python /workspace/Aug/download.py | tail -n 1)
 
-# 数据清洗
+# Data Cleaning
 cd /workspace/Aug/
 python /workspace/Aug/main.py "$NEW_PATH"
 cd /workspace/
 
 
-# 进行yolo2coco转换
+# Perform yolo2coco conversion
 python /workspace/mmdetection/yolo2coco.py
 
 
 
 FILE="/venv/main/lib/python3.10/site-packages/mmengine/runner/checkpoint.py"
 
-# 备份
+# Backup
 cp "$FILE" "$FILE.bak"
 
-# 删除旧的函数内容（包含装饰器）
+# Remove old function content (including decorators)
 sed -i "/@CheckpointLoader.register_scheme(prefixes='')/,/return checkpoint/d" "$FILE"
 
-# 追加新的函数（包含装饰器）
+# Add new functions (including decorators)
 cat << 'EOF' >> "$FILE"
 
 @CheckpointLoader.register_scheme(prefixes='')
@@ -64,16 +64,16 @@ def load_from_local(filename: str, map_location: str = 'cpu') -> dict:
     if not osp.isfile(filename):
         raise FileNotFoundError(f"{filename} can not be found.")
 
-    # 信任 mmengine 的日志对象，避免 UnpicklingError
+    # Trust mmengine's log objects to avoid UnpicklingError
     torch.serialization.add_safe_globals([mmengine.logging.history_buffer.HistoryBuffer])
 
-    # 允许完整反序列化
+    # Allow full deserialization
     checkpoint = torch.load(filename, map_location=map_location, weights_only=False)
 
     return checkpoint
 
 EOF
 
-echo "✔ 替换完成：$FILE"
+echo "✔ Replacement complete: $FILE"
 
 
