@@ -7,7 +7,7 @@ Hi I am the author of the changed `mmdetection` (**open-mmlab/mmdetection origin
 
 For the co-operation of our **25T3 COMP9517 Group44-AlphaVison**, for my part more theoritical understanding work, you can refer to the doc below (Not much revelent with the code).
 
-[Google Doc](https://docs.google.com/document/d/1H8y2cItitBfidH8BwDBNAL4e1RJpIFDKc4HgqvQaMic/edit?tab=t.9ud2au53lm5g)
+[Google Doc of 25T3 COMP9517 Group44-AlphaVison](https://docs.google.com/document/d/1H8y2cItitBfidH8BwDBNAL4e1RJpIFDKc4HgqvQaMic/edit?tab=t.9ud2au53lm5g)
 
 For my running video demonstration:
 
@@ -18,7 +18,7 @@ For my running video demonstration:
 
 And I uploaded all my part here:
 
-[My personal outcomes](https://drive.google.com/drive/folders/18q28xgFnneVO05eR0XCbZgTiU6p7Z88X)
+[Google Drive: My personal outcomes](https://drive.google.com/drive/folders/18q28xgFnneVO05eR0XCbZgTiU6p7Z88X)
 
 ![](./imgs/4261939750900.png)
 
