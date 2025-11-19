@@ -1,6 +1,8 @@
 
 # COMP9517 Yanjian Shen statement
 
+This project's repo: `https://github.com/SenRanja/mmdetection`.
+
 Hi I am the author of the changed `mmdetection` (**mmdetection original Git repo**: `https://github.com/open-mmlab/mmdetection`). When I ran **mmdetection**, I found it doesn't update since two years ago, and the code doesn't support the **python & cuda** newest security, saefty and features, hence there are some chanllenges in the compatibility with **mmdetection** and common CUDA platforms. Hence what I could do is to fork the repo and then I did a lot of changes inside its many internal files, hence that's why I can run it successfully.
 
 For the co-operation of our **25T3 COMP9517 Group44-AlphaVison**, for my part more theoritical understanding work, you can refer to the doc below (Not much revelent with the code).
@@ -53,7 +55,9 @@ Please run `./prepare.sh` directly. And then run sections **train** and **verifi
 
 ---
 
-# prepare.sh each step explanation (Yanjian Shen changed, you don't need to run this section reduntantly if you have run ./mmdetection/prepare.sh already)
+# prepare.sh each step explanation 
+
+You don't need to run this section **reduntantly** if you have run `./mmdetection/prepare.sh` **already**!
 
 ```bash
 # Install daemon process
