@@ -1,24 +1,24 @@
 
 # COMP9517 Yanjian Shen statement
 
-This project's repo: `https://github.com/SenRanja/mmdetection`.
+This project's repo: `[https://github.com/SenRanja/mmdetection](https://github.com/SenRanja/mmdetection)`.
 
-Hi I am the author of the changed `mmdetection` (**mmdetection original Git repo**: `https://github.com/open-mmlab/mmdetection`). When I ran **mmdetection**, I found it doesn't update since two years ago, and the code doesn't support the **python & cuda** newest security, saefty and features, hence there are some chanllenges in the compatibility with **mmdetection** and common CUDA platforms. Hence what I could do is to fork the repo and then I did a lot of changes inside its many internal files, hence that's why I can run it successfully.
+Hi I am the author of the changed `mmdetection` (**open-mmlab/mmdetection original Git repo**: [open-mmlab/mmdetection](https://github.com/open-mmlab/mmdetection)). When I ran **mmdetection**, I found it doesn't update since two years ago, and the code doesn't support the **python & cuda** newest security, saefty and features, hence there are some chanllenges in the compatibility with **mmdetection** and common CUDA platforms. Hence what I could do is to fork the repo and then I did a lot of changes inside its many internal files, hence that's why I can run it successfully.
 
 For the co-operation of our **25T3 COMP9517 Group44-AlphaVison**, for my part more theoritical understanding work, you can refer to the doc below (Not much revelent with the code).
 
-Google Doc: `https://docs.google.com/document/d/1H8y2cItitBfidH8BwDBNAL4e1RJpIFDKc4HgqvQaMic/edit?tab=t.9ud2au53lm5g`
+[Google Doc](https://docs.google.com/document/d/1H8y2cItitBfidH8BwDBNAL4e1RJpIFDKc4HgqvQaMic/edit?tab=t.9ud2au53lm5g)
 
 For my running video demonstration:
 
-`https://drive.google.com/drive/folders/1kv95DOXFGAvkeT-UkY6sG_IoBu4V4R3V`
+[video demonstration](https://drive.google.com/drive/folders/1kv95DOXFGAvkeT-UkY6sG_IoBu4V4R3V)
 
 ![](./imgs/4235277096099.png)
 
 
 And I uploaded all my part here:
 
-https://drive.google.com/drive/folders/18q28xgFnneVO05eR0XCbZgTiU6p7Z88X
+[My personal outcomes](https://drive.google.com/drive/folders/18q28xgFnneVO05eR0XCbZgTiU6p7Z88X)
 
 ![](./imgs/4261939750900.png)
 
