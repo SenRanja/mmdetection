@@ -33,10 +33,12 @@ My script directly writes the three Cocoa JSON files to the directory `/root/.ca
 
 # Environmental Preparation
    
-   cd /workspace/
-   git clone https://github.com/SenRanja/mmdetection.git
-   chmod +x ./mmdetection/prepare.sh
-   ./mmdetection/prepare.sh
+```bash
+cd /workspace/
+git clone https://github.com/SenRanja/mmdetection.git
+chmod +x ./mmdetection/prepare.sh
+./mmdetection/prepare.sh
+```
    
 
 Python should be **3.10.x**, there is something wrong if **3.11.x** or **3.12.x**.
@@ -45,13 +47,17 @@ Please run `./prepare.sh` directly. And then run sections **train** and **verifi
 
 # train
 
-   cd /workspace/mmdetection;
-   python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > /workspace/train.log 2>&1
+```bash
+cd /workspace/mmdetection;
+python tools/train.py configs/crop_pest/faster_rcnn_crop_pest.py > /workspace/train.log 2>&1
+```
 
 # Verification (replace the weight names yourself)
 
-   cd /workspace/mmdetection;
-   python tools/test.py configs/crop_pest/faster_rcnn_crop_pest.py /workspace/output/epoch_60.pth --show-dir /workspace/output_60_show/ > /workspace/eval_60.log 2>&1
+```bash
+cd /workspace/mmdetection;
+python tools/test.py configs/crop_pest/faster_rcnn_crop_pest.py /workspace/output/epoch_60.pth --show-dir /workspace/output_60_show/ > /workspace/eval_60.log 2>&1
+```
 
 ---
 
